@@ -278,8 +278,8 @@ public class BookingService {
 
     @Transactional
     public Booking extendBooking(Long bookingId, int extraMinutes) {
-        if (extraMinutes > 45) {
-            throw new RuntimeException("Chỉ được gia hạn tối đa 45 phút.");
+        if (extraMinutes > 120) {
+            throw new RuntimeException("Chỉ được gia hạn tối đa 120 phút.");
         }
 
         Booking currentBooking = bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
