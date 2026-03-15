@@ -41,49 +41,99 @@ public class BookingController {
             Principal principal,
             RedirectAttributes redirectAttributes) {
 
+        // Nếu chưa đăng nhập
         if (principal == null) {
             return "redirect:/login";
         }
 
         try {
+
             String username = principal.getName();
-            User user = userService.findByUsername(username).orElseThrow();
+            User user = userService.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
 
             LocalDateTime startDateTime = LocalDateTime.of(date, startTime);
-            
-            // LOGIC MỚI: XÁC ĐỊNH GIỜ KẾT THÚC CỦA KHUNG GIỜ (SLOT END TIME)
-            // Các khung: 7-9, 10-12, 14-16, 18-20
+
+        /* =============================
+           XÁC ĐỊNH KHUNG GIỜ CỦA SLOT
+        ============================== */
             LocalDateTime slotEndTime;
-            int hour = startTime.getHour();
-            if (hour == 7) slotEndTime = LocalDateTime.of(date, LocalTime.of(9, 0));
-            else if (hour == 10) slotEndTime = LocalDateTime.of(date, LocalTime.of(12, 0));
-            else if (hour == 14) slotEndTime = LocalDateTime.of(date, LocalTime.of(16, 0));
-            else if (hour == 18) slotEndTime = LocalDateTime.of(date, LocalTime.of(20, 0));
-            else {
-                // Nếu chọn giờ lạ (không trong khung), mặc định cộng duration (hoặc báo lỗi)
-                slotEndTime = startDateTime.plusMinutes(duration);
+
+            switch (startTime.getHour()) {
+                case 7:
+                    slotEndTime = LocalDateTime.of(date, LocalTime.of(9, 0));
+                    break;
+                case 10:
+                    slotEndTime = LocalDateTime.of(date, LocalTime.of(12, 0));
+                    break;
+                case 14:
+                    slotEndTime = LocalDateTime.of(date, LocalTime.of(16, 0));
+                    break;
+                case 18:
+                    slotEndTime = LocalDateTime.of(date, LocalTime.of(20, 0));
+                    break;
+                default:
+                    slotEndTime = startDateTime.plusMinutes(duration);
             }
 
-            // Tính giờ kết thúc dự kiến
+        /* =============================
+           TÍNH GIỜ KẾT THÚC
+        ============================== */
             LocalDateTime endDateTime = startDateTime.plusMinutes(duration);
 
-            // Nếu giờ kết thúc vượt quá khung giờ -> Cắt xuống bằng khung giờ
             if (endDateTime.isAfter(slotEndTime)) {
                 endDateTime = slotEndTime;
             }
 
-            // Gọi Service (Service sẽ tự động xử lý nếu startDateTime < now)
-            bookingService.createBooking(user.getId(), pitchId, startDateTime, endDateTime);
+        /* =============================
+           TẠO BOOKING
+        ============================== */
+            bookingService.createBooking(
+                    user.getId(),
+                    pitchId,
+                    startDateTime,
+                    endDateTime
+            );
 
-            redirectAttributes.addFlashAttribute("success", "Đặt sân thành công! Vui lòng chờ xác nhận.");
+            redirectAttributes.addFlashAttribute(
+                    "success",
+                    "✅ Đặt sân thành công! Vui lòng chờ admin xác nhận."
+            );
+
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+
+            redirectAttributes.addFlashAttribute(
+                    "error",
+                    "❌ Không thể đặt sân: " + (e.getMessage() != null ? e.getMessage() : "Lỗi hệ thống")
+            );
+
             return "redirect:/pitches/" + pitchId;
         }
 
         return "redirect:/profile";
     }
 
+    @PostMapping("/confirm")
+    public String confirmBooking(
+            @RequestParam Long pitchId,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            @RequestParam @DateTimeFormat(pattern = "HH:mm") LocalTime startTime,
+            @RequestParam Integer duration,
+            Model model) {
+
+        Pitch pitch = pitchService.getPitchById(pitchId);
+
+        LocalDateTime start = LocalDateTime.of(date, startTime);
+        LocalDateTime end = start.plusMinutes(duration);
+
+        model.addAttribute("pitch", pitch);
+        model.addAttribute("date", date);
+        model.addAttribute("startTime", startTime);
+        model.addAttribute("endTime", end.toLocalTime());
+        model.addAttribute("duration", duration);
+
+        return "booking-confirm";
+    }
     @GetMapping("/cancel/{id}")
     public String cancelBooking(@PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
         if (principal == null) return "redirect:/login";

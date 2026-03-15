@@ -111,153 +111,168 @@
 </head>
 <body>
 
-    <!-- Navbar -->
-    <div th:replace="~{fragments/header :: header('facilities')}"></div>
+<!-- Navbar -->
+<div th:replace="~{fragments/header :: header('facilities')}"></div>
 
-    <section class="section-padding" style="margin-top: 60px;">
-        <div class="container">
-            <!-- ĐÃ XÓA BREADCRUMB -->
+<section class="section-padding" style="margin-top: 60px;">
+    <div class="container">
+        <!-- ĐÃ XÓA BREADCRUMB -->
 
-            <div class="row g-5">
-                <!-- Left Column: Images & Info -->
-                <div class="col-lg-8">
-                    <!-- Gallery -->
-                    <div class="pitch-gallery">
-                        <div id="pitchCarousel" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img th:src="${pitch.imageUrl != null ? pitch.imageUrl : 'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?q=80&w=2071&auto=format&fit=crop'}" class="d-block w-100" alt="Main Image">
-                                </div>
-                                <div class="carousel-item" th:if="${pitch.surfaceImageUrl != null}">
-                                    <img th:src="${pitch.surfaceImageUrl}" class="d-block w-100" alt="Surface Image">
-                                </div>
-                                <div class="carousel-item" th:if="${pitch.benchImageUrl != null}">
-                                    <img th:src="${pitch.benchImageUrl}" class="d-block w-100" alt="Bench Image">
-                                </div>
+        <div class="row g-5">
+            <!-- Left Column: Images & Info -->
+            <div class="col-lg-8">
+                <!-- Gallery -->
+                <div class="pitch-gallery">
+                    <div id="pitchCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img th:src="${pitch.imageUrl != null ? pitch.imageUrl : 'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?q=80&w=2071&auto=format&fit=crop'}" class="d-block w-100" alt="Main Image">
                             </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#pitchCarousel" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#pitchCarousel" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            </button>
+                            <div class="carousel-item" th:if="${pitch.surfaceImageUrl != null}">
+                                <img th:src="${pitch.surfaceImageUrl}" class="d-block w-100" alt="Surface Image">
+                            </div>
+                            <div class="carousel-item" th:if="${pitch.benchImageUrl != null}">
+                                <img th:src="${pitch.benchImageUrl}" class="d-block w-100" alt="Bench Image">
+                            </div>
                         </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#pitchCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#pitchCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div class="mb-5 mt-4">
+                    <h2 class="text-dark fw-bold mb-3" th:text="${pitch.name}">Sân Bóng A1</h2>
+                    <div class="d-flex align-items-center mb-4 flex-wrap gap-2">
+                        <span class="badge bg-info text-dark px-3 py-2" th:if="${pitch.type.name() == 'PITCH_5'}"><i class="fas fa-users me-1"></i> Sân 5 người</span>
+                        <span class="badge bg-primary px-3 py-2" th:if="${pitch.type.name() == 'PITCH_7'}"><i class="fas fa-users me-1"></i> Sân 7 người</span>
+                        <span class="text-danger fw-bold fs-4 ms-2" th:text="${#numbers.formatDecimal(pitch.pricePerHour, 0, 'COMMA', 0, 'POINT') + ' đ/giờ'}">300,000 đ/giờ</span>
                     </div>
 
-                    <!-- Info -->
-                    <div class="mb-5 mt-4">
-                        <h2 class="text-dark fw-bold mb-3" th:text="${pitch.name}">Sân Bóng A1</h2>
-                        <div class="d-flex align-items-center mb-4 flex-wrap gap-2">
-                            <span class="badge bg-info text-dark px-3 py-2" th:if="${pitch.type.name() == 'PITCH_5'}"><i class="fas fa-users me-1"></i> Sân 5 người</span>
-                            <span class="badge bg-primary px-3 py-2" th:if="${pitch.type.name() == 'PITCH_7'}"><i class="fas fa-users me-1"></i> Sân 7 người</span>
-                            <span class="text-danger fw-bold fs-4 ms-2" th:text="${#numbers.formatDecimal(pitch.pricePerHour, 0, 'COMMA', 0, 'POINT') + ' đ/giờ'}">300,000 đ/giờ</span>
-                        </div>
+                    <div class="p-4 rounded" style="background-color: #fff; border: 1px solid #721114;">
+                        <h5 class="text-dark mb-3 border-bottom border-secondary pb-2">Mô tả sân</h5>
+                        <p class="text-dark mb-0" th:text="${pitch.description}" style="line-height: 1.6;">Sân cỏ nhân tạo chất lượng cao...</p>
+                    </div>
+                </div>
 
-                        <div class="p-4 rounded" style="background-color: #fff; border: 1px solid #721114;">
-                            <h5 class="text-dark mb-3 border-bottom border-secondary pb-2">Mô tả sân</h5>
-                            <p class="text-dark mb-0" th:text="${pitch.description}" style="line-height: 1.6;">Sân cỏ nhân tạo chất lượng cao...</p>
-                        </div>
+                <!-- Reviews Section -->
+                <div class="mb-5">
+                    <h4 class="text-dark mb-4 border-start border-4 border-danger ps-3">Đánh giá từ khách hàng</h4>
+
+                    <div th:if="${reviews == null or reviews.isEmpty()}" class="text-muted fst-italic p-3 text-center border border-secondary rounded">
+                        Chưa có đánh giá nào cho sân này. Hãy là người đầu tiên trải nghiệm!
                     </div>
 
-                    <!-- Reviews Section -->
-                    <div class="mb-5">
-                        <h4 class="text-dark mb-4 border-start border-4 border-danger ps-3">Đánh giá từ khách hàng</h4>
-
-                        <div th:if="${reviews == null or reviews.isEmpty()}" class="text-muted fst-italic p-3 text-center border border-secondary rounded">
-                            Chưa có đánh giá nào cho sân này. Hãy là người đầu tiên trải nghiệm!
-                        </div>
-
-                        <div th:if="${reviews != null}" th:each="review : ${reviews}" class="review-card">
-                            <div class="d-flex">
-                                <div class="review-avatar" th:text="${#strings.substring(review.booking.user.fullName, 0, 1)}">A</div>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <h6 class="text-white mb-0" th:text="${review.booking.user.fullName}">User Name</h6>
-                                        <small class="text-white-50" th:text="${#temporals.format(review.createdAt, 'dd/MM/yyyy')}">Date</small>
-                                    </div>
-                                    <div class="text-warning mb-2" style="font-size: 0.9rem;">
-                                        <span th:each="i : ${#numbers.sequence(1, review.rating)}"><i class="fas fa-star"></i></span>
-                                        <span th:if="${review.rating < 5}" th:each="i : ${#numbers.sequence(review.rating + 1, 5)}" class="text-muted"><i class="far fa-star"></i></span>
-                                    </div>
-                                    <p class="text-light mb-0" th:text="${review.comment}">Comment...</p>
+                    <div th:if="${reviews != null}" th:each="review : ${reviews}" class="review-card">
+                        <div class="d-flex">
+                            <div class="review-avatar" th:text="${#strings.substring(review.booking.user.fullName, 0, 1)}">A</div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="text-white mb-0" th:text="${review.booking.user.fullName}">User Name</h6>
+                                    <small class="text-white-50" th:text="${#temporals.format(review.createdAt, 'dd/MM/yyyy')}">Date</small>
                                 </div>
+                                <div class="text-warning mb-2" style="font-size: 0.9rem;">
+                                    <span th:each="i : ${#numbers.sequence(1, review.rating)}"><i class="fas fa-star"></i></span>
+                                    <span th:if="${review.rating < 5}" th:each="i : ${#numbers.sequence(review.rating + 1, 5)}" class="text-muted"><i class="far fa-star"></i></span>
+                                </div>
+                                <p class="text-light mb-0" th:text="${review.comment}">Comment...</p>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Right Column: Booking Form -->
-                <div class="col-lg-4">
-                    <div class="booking-form-card">
-                        <h4 class="text-center text-dark mb-4 fw-bold">ĐẶT SÂN NGAY</h4>
+            <!-- Right Column: Booking Form -->
+            <div class="col-lg-4">
+                <div class="booking-form-card">
+                    <h4 class="text-center text-dark mb-4 fw-bold">ĐẶT SÂN NGAY</h4>
 
-                        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
-                            <span th:text="${error}"></span>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <!-- SUCCESS -->
+                    <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
+                        <span th:text="${success}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <!-- ERROR -->
+                    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+                        <span th:text="${error}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <form th:action="@{/booking/confirm}" method="post">
+                        <input type="hidden" name="pitchId" th:value="${pitch.id}">
+
+                        <div class="mb-3">
+                            <label class="form-label">Ngày đặt</label>
+                            <input type="date" name="date" class="form-control" required
+                                   th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
+                                   th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
                         </div>
 
-                        <form th:action="@{/booking/create}" method="post">
-                            <input type="hidden" name="pitchId" th:value="${pitch.id}">
+                        <div class="mb-3">
+                            <label class="form-label">Khung giờ</label>
+                            <select name="startTime" class="form-select" required>
+                                <option value="07:00">07:00 - 09:00 (Sáng)</option>
+                                <option value="10:00">10:00 - 12:00 (Trưa)</option>
+                                <option value="14:00">14:00 - 16:00 (Chiều)</option>
+                                <option value="18:00">18:00 - 20:00 (Tối)</option>
+                            </select>
+                        </div>
 
-                            <div class="mb-3">
-                                <label class="form-label">Ngày đặt</label>
-                                <input type="date" name="date" class="form-control" required
-                                       th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
-                                       th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
-                            </div>
+                        <div class="mb-4">
+                            <label class="form-label">Thời lượng</label>
+                            <select name="duration" class="form-select">
+                                <option value="120" selected>120 Phút (2 tiếng)</option>
+                                <option value="90">90 Phút</option>
+                                <option value="60">60 Phút</option>
+                            </select>
+                        </div>
 
-                            <div class="mb-3">
-                                <label class="form-label">Khung giờ</label>
-                                <select name="startTime" class="form-select" required>
-                                    <option value="07:00">07:00 - 09:00 (Sáng)</option>
-                                    <option value="10:00">10:00 - 12:00 (Trưa)</option>
-                                    <option value="14:00">14:00 - 16:00 (Chiều)</option>
-                                    <option value="18:00">18:00 - 20:00 (Tối)</option>
-                                </select>
-                            </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-hero fw-bold py-3 text-uppercase">
+                                <i class="fas fa-check-circle me-2"></i> Xác nhận đặt sân
+                            </button>
+                        </div>
+                    </form>
 
-                            <div class="mb-4">
-                                <label class="form-label">Thời lượng</label>
-                                <select name="duration" class="form-select">
-                                    <option value="120" selected>120 Phút (2 tiếng)</option>
-                                    <option value="90">90 Phút</option>
-                                    <option value="60">60 Phút</option>
-                                </select>
-                            </div>
-
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-hero fw-bold py-3 text-uppercase">
-                                    <i class="fas fa-check-circle me-2"></i> Xác nhận đặt sân
-                                </button>
-                            </div>
-                        </form>
-
-                        <!-- Lịch đã đặt trong ngày -->
-                        <div class="mt-5 pt-4 border-top border-secondary">
-                            <h6 class="text-dark mb-3">Lịch đã kín hôm nay:</h6>
-                            <div th:if="${bookedSlots.isEmpty()}" class="text-success small p-2 border border-success rounded bg-opacity-10 bg-success">
-                                <i class="fas fa-check-circle me-1"></i> Chưa có lịch đặt nào. Sân trống cả ngày!
-                            </div>
-                            <div th:each="slot : ${bookedSlots}" class="slot-item booked">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span><i class="fas fa-clock me-2"></i> <span th:text="${#temporals.format(slot.startTime, 'HH:mm') + ' - ' + #temporals.format(slot.endTime, 'HH:mm')}"></span></span>
-                                    <span class="badge bg-danger text-white">Đã đặt</span>
-                                </div>
+                    <!-- Lịch đã đặt trong ngày -->
+                    <div class="mt-5 pt-4 border-top border-secondary">
+                        <h6 class="text-dark mb-3">Lịch đã kín hôm nay:</h6>
+                        <div th:if="${bookedSlots.isEmpty()}" class="text-success small p-2 border border-success rounded bg-opacity-10 bg-success">
+                            <i class="fas fa-check-circle me-1"></i> Chưa có lịch đặt nào. Sân trống cả ngày!
+                        </div>
+                        <div th:each="slot : ${bookedSlots}" class="slot-item booked">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="fas fa-clock me-2"></i> <span th:text="${#temporals.format(slot.startTime, 'HH:mm') + ' - ' + #temporals.format(slot.endTime, 'HH:mm')}"></span></span>
+                                <span class="badge bg-danger text-white">Đã đặt</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <div th:replace="~{fragments/footer :: footer}"></div>
+<!-- Footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
 
-    <!-- CHAT WIDGET -->
-    <div th:replace="~{fragments/chat-widget :: chat-widget}"></div>
+<!-- CHAT WIDGET -->
+<div th:replace="~{fragments/chat-widget :: chat-widget}"></div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/main.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
+<script>
+    setTimeout(function(){
+        let alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert){
+            alert.style.display = "none";
+        });
+    },3000);
+</script>
 </html>
